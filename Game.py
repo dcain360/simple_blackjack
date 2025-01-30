@@ -87,7 +87,7 @@ class Blackjack:
         self.pen.clear()
         self.pen.write("splitting cards")
 
-    def deal(self):
+    def deal(self): 
         # pen clears need to be at the top of the function 
         # otherwise the cards will be dealt and then subsequently cleared
         self.pen.clear()
