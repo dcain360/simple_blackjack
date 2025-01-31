@@ -10,3 +10,15 @@ Game Logic:
     -- a thought: added a flag called allowedToHit and set it to true based on the state of the program 
     * There needs to be a way to for the game to know when to shuffle the deck, also once cards are popped to render they should be added back to the deck 
 Once all the things seem to work appropriately then I will add functionality for betting and doubling down, after that I think splitting makes sense.
+
+Also, just wanted to add you can stand at anytime
+There needs to be some type of system to manage the rules based on which state the program is in 
+Currently allowed to do way too much at times in which you should not be able to, like you can deal at any moment or stand 
+
+
+General Blackjack things that it doesn't do rn;
+
+- if you get an ace it thinks it is an 11 not a 1 or an 11
+- when player or dealer gets an Ace and a 10 card the game does not recognize this as a blackjack 
+- if you get 2 identical cards you cannot split
+- if player hand_value and dealer hand_value are equal there is no push, actually I don't think there is a case at all for this 

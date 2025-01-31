@@ -12,7 +12,8 @@ class Blackjack:
         self.player = Player.Player()
         self.dealer = Dealer.Dealer()
         self.cardX = -400
-        
+        self.allowed_to_hit = False
+
     def run(self):
         print("Hello World")
         self.running = True
@@ -26,12 +27,17 @@ class Blackjack:
 
     
     def render_hand(self, y, player):
+        self.allowed_to_hit = False
+
         for i in range(len(player.hand)):
             card = player.hand.pop(0)
             card.render(player.cardX, y, self.pen)
             player.cardX += 110
     
     def hit(self):
+        if self.allowed_to_hit == False:
+            return
+        
         # every time add_card is called on dealer/player hand_value attribtue is adjusted
         self.player.add_card(self.deck.draw()) 
 
@@ -45,6 +51,7 @@ class Blackjack:
         else:    
             print(f'Dealer hand: {self.dealer.hand_value}')
             print(f'Your hand: {self.player.hand_value}')
+            self.allowed_to_hit = True
 
     def dealer_hit(self):
         self.dealer.add_card(self.deck.draw())
@@ -56,6 +63,8 @@ class Blackjack:
         print(f'Your hand: {self.player.hand_value}' )    
 
     def stand(self):
+        self.allowed_to_hit = False
+
         while self.dealer.hand_value < 17:
             self.dealer_hit() 
         if self.dealer.hand_value > 21:
@@ -72,6 +81,7 @@ class Blackjack:
             self.reset()
 
     def reset(self):
+        self.allowed_to_hit = False
         print("TODO: find a way to overload reset function so it prints a message\n i.e you lose, you won, dealer bust... etc")
         self.deck.shuffle()
         self.player.hand_value = 0
@@ -105,4 +115,6 @@ class Blackjack:
 
     
         self.render_hand(-150, self.player)
-        self.render_hand(150, self.dealer)   
+        self.render_hand(150, self.dealer)
+
+        self.allowed_to_hit = True   
