@@ -1,0 +1,12 @@
+Initially, when the program starts, it shows the keybinds. To actually start the game rn you have to press r (reset) and then d (deal)
+    I feel like it should Shows the commands at all times and intially show press d to deal. That could be something to work on. 
+
+Game Logic: 
+    * An Ace should be worth 1 or 11   
+    * The hand value could be rendered somewhere
+    * It seems like the dealer behaves normally, but that will require testing
+    * Right now, if you are in the reset screen it will still allow you to hit and then it will render cards to the screen, shouldn't be allowed
+    * Just adding, you can hit at any point in the state of the program which I am not a fan of
+    -- a thought: added a flag called allowedToHit and set it to true based on the state of the program 
+    * There needs to be a way to for the game to know when to shuffle the deck, also once cards are popped to render they should be added back to the deck 
+Once all the things seem to work appropriately then I will add functionality for betting and doubling down, after that I think splitting makes sense.
