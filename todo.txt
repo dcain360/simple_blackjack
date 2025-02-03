@@ -22,3 +22,7 @@ General Blackjack things that it doesn't do rn;
 - when player or dealer gets an Ace and a 10 card the game does not recognize this as a blackjack 
 - if you get 2 identical cards you cannot split
 - if player hand_value and dealer hand_value are equal there is no push, actually I don't think there is a case at all for this 
+
+spamming keys during the stand pause timer cause unexpected behavior
+
+Draw the Dealer's down card 

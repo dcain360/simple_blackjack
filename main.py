@@ -1,5 +1,5 @@
 import turtle
-from Game import Blackjack
+from Game import Blackjack, GameState
 
 def setup_screen(screen, game):
     screen.title("Blackjack")
@@ -9,11 +9,11 @@ def setup_screen(screen, game):
 
     screen.listen()
 
-    screen.onkey(game.hit, 'h')
-    screen.onkey(game.stand, 's')
-    screen.onkey(game.deal, 'd')
-    screen.onkey(game.split, 'p')
-    screen.onkey(game.reset, 'r')
+    screen.onkey(lambda: game.deal() if game.state == GameState.START or game.state == GameState.GAME_OVER else None, 'd')
+    screen.onkey(lambda: game.hit() if game.state == GameState.PLAYER_TURN else None, 'h')
+    screen.onkey(lambda: game.stand() if game.state == GameState.PLAYER_TURN else None, 's')
+    screen.onkey(lambda: game.split() if game.state == GameState.PLAYER_TURN else None, 'p')
+    screen.onkey(lambda: game.reset() if game.state == GameState.GAME_OVER else None, 'r')
 
 def setup_pen(pen):
     pen.speed(0)

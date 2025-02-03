@@ -4,6 +4,16 @@ import Dealer
 import Player
 import time
 
+from enum import Enum, auto
+
+class GameState(Enum):
+    START = auto()
+    DEAL = auto()
+    PLAYER_TURN = auto()
+    DEALER_TURN = auto()
+    GAME_OVER = auto()
+
+
 class Blackjack:
     def __init__(self, screen, pen):
         self.running = False
@@ -12,7 +22,7 @@ class Blackjack:
         self.player = Player.Player()
         self.dealer = Dealer.Dealer()
         self.cardX = -400
-        self.allowed_to_hit = False
+        self.state = GameState.START
 
     def run(self):
         print("Hello World")
@@ -21,7 +31,8 @@ class Blackjack:
         self.pen.goto(-480,300)
         self.pen.pendown()
         self.pen.write("Welcome to Blackjack!\n 'h' - hit\n 's' - stand\n 'd' - deal\n 'r' - reset", False, font=("Courier New", 12, "normal"))
- 
+        
+        self.deck.shuffle()
         self.player.cardX = self.cardX
         self.dealer.cardX = self.cardX
 
@@ -31,66 +42,61 @@ class Blackjack:
 
         for i in range(len(player.hand)):
             card = player.hand.pop(0)
-            card.render(player.cardX, y, self.pen)
+            card.render(player.cardX, y, self.pen) 
+            # below we are inserting the card to the front of the list. In the deck class, to draw a card, we use pop() which takes the card from the end of the list. 
+            # To me, this way of doing things is unintuitive and could be changed but it's how I chose to do it.I guess it depends on if you view the top of the deck as the front or the end :|
+            self.deck.cards.insert(0, card)
             player.cardX += 110
     
     def hit(self):
-        if self.allowed_to_hit == False:
+        if self.state != GameState.PLAYER_TURN:
             return
         
         # every time add_card is called on dealer/player hand_value attribtue is adjusted
         self.player.add_card(self.deck.draw()) 
 
-        self.render_hand(-150, self.player)
-        self.render_hand(150, self.dealer)
+        self.update_display()
 
         if(self.player.hand_value > 21):
-            print("You lose")
-            time.sleep(5)
-            self.reset()
+            self.reset("You lose!, press 'd' to deal again")
+            self.state = GameState.GAME_OVER
         else:    
-            print(f'Dealer hand: {self.dealer.hand_value}')
-            print(f'Your hand: {self.player.hand_value}')
-            self.allowed_to_hit = True
+            self.state = GameState.PLAYER_TURN
 
     def dealer_hit(self):
         self.dealer.add_card(self.deck.draw())
 
-        self.render_hand(-150, self.player)
-        self.render_hand(150, self.dealer)
-
-        print(f'Dealer hand: {self.dealer.hand_value}')
-        print(f'Your hand: {self.player.hand_value}' )    
+        self.update_display()  
 
     def stand(self):
-        self.allowed_to_hit = False
+        if self.state != GameState.PLAYER_TURN:
+            return
 
-        while self.dealer.hand_value < 17:
+
+        self.state = GameState.DEALER_TURN
+
+        while self.dealer.hand_value < 17 and self.player.hand_value <= 21:
             self.dealer_hit() 
         if self.dealer.hand_value > 21:
-            print("Dealer busted")
-            time.sleep(5)
-            self.reset()
+            self.reset("Dealer busted! you win! Press 'd' to deal again")
         elif self.dealer.hand_value > self.player.hand_value:
-            print("You lose :(")
-            time.sleep(5)
-            self.reset()
+            self.reset("You lose :( Press 'd' to deal again")
         else:
-            print("You win!")
-            time.sleep(5)
-            self.reset()
+            self.reset("You win! Press 'd' to deal again")
 
-    def reset(self):
-        self.allowed_to_hit = False
-        print("TODO: find a way to overload reset function so it prints a message\n i.e you lose, you won, dealer bust... etc")
+    def reset(self, message=None):
+        if message:
+            self.pen.color("black")
+            self.pen.goto(-200, 0)
+            self.pen.write(message, font=("Courier New", 12, "normal"))
+            time.sleep(2)
+
         self.deck.shuffle()
-        self.player.hand_value = 0
-        self.dealer.hand_value = 0
-        self.player.hand.clear()
-        self.dealer.hand.clear()
-        self.pen.clear()
-        self.pen.goto(0,0)
-        self.pen.write("Press 'd' to deal")
+        self.player.reset() # sets hand value to 0
+        self.dealer.reset() # same ^^
+        self.player.cardX = self.cardX
+        self.dealer.cardX = self.cardX
+        self.state = GameState.START
     
     def split(self):
         print("split")
@@ -98,6 +104,8 @@ class Blackjack:
         self.pen.write("splitting cards")
 
     def deal(self): 
+        if self.state != GameState.START and self.state != GameState.GAME_OVER:
+            return
         # pen clears need to be at the top of the function 
         # otherwise the cards will be dealt and then subsequently cleared
         self.pen.clear()
@@ -110,11 +118,17 @@ class Blackjack:
         self.player.add_card(self.deck.draw())
         self.dealer.add_card(self.deck.draw())
 
-        print(f'Dealer hand: {self.dealer.hand_value}')
-        print(f'Your hand: {self.player.hand_value}' )
+        self.update_display()
 
-    
+        self.state = GameState.PLAYER_TURN
+
+    def update_display(self):
+        
+        if self.dealer.hand == [] and self.player.hand == []: # only want to clear all cards whenever the hands are empty 
+            self.pen.clear()
+
         self.render_hand(-150, self.player)
         self.render_hand(150, self.dealer)
 
-        self.allowed_to_hit = True   
+        print(f'Dealer hand: {self.dealer.hand_value}')
+        print(f'Your hand: {self.player.hand_value}')

@@ -12,3 +12,8 @@ class Dealer:
             self.hand_value += card.get_value()
         except:
             print("could not compute dealer hand value")
+            
+    def reset(self):
+        self.hand = []
+        self.hand_value = 0
+        self.cardX = 0
