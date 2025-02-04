@@ -3,6 +3,7 @@ import Card
 class Player:
 	def __init__(self):
 		self.money = 1000
+		self.bet = 0
 		self.hand = []
 		self.hand_value = 0
 		self.cardX = 0

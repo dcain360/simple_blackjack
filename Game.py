@@ -18,6 +18,8 @@ class Blackjack:
     def __init__(self, screen, pen):
         self.running = False
         self.pen = pen
+        self.infoPen = turtle.Turtle()
+        self.infoPen.hideturtle()
         self.deck = Deck.Deck()
         self.player = Player.Player()
         self.dealer = Dealer.Dealer()
@@ -25,17 +27,20 @@ class Blackjack:
         self.state = GameState.START
 
     def run(self):
-        print("Hello World")
+        self.infoPen.speed(0)
+        self.infoPen.hideturtle()
+
         self.running = True
         self.pen.penup()
         self.pen.goto(-480,300)
         self.pen.pendown()
         self.pen.write("Welcome to Blackjack!\n 'h' - hit\n 's' - stand\n 'd' - deal\n 'r' - reset", False, font=("Courier New", 12, "normal"))
         
+
         self.deck.shuffle()
+
         self.player.cardX = self.cardX
         self.dealer.cardX = self.cardX
-
     
     def render_hand(self, y, player):
         self.allowed_to_hit = False
@@ -48,6 +53,19 @@ class Blackjack:
             self.deck.cards.insert(0, card)
             player.cardX += 110
     
+    def write_hand_values(self):
+        self.infoPen.clear()
+        self.infoPen.color("black")
+        self.infoPen.penup()
+        self.infoPen.goto(-400, -300)
+        self.infoPen.pendown()
+        self.infoPen.write(f'{self.player.hand_value}', False, font=("Arial Black", 14, "normal"))
+
+        self.infoPen.penup()
+        self.infoPen.goto(-400, 300)
+        self.infoPen.pendown()
+        self.infoPen.write(f'{self.dealer.hand_value}', False, font=("Arial Black", 14, "normal"))
+
     def hit(self):
         if self.state != GameState.PLAYER_TURN:
             return
@@ -109,6 +127,7 @@ class Blackjack:
         # pen clears need to be at the top of the function 
         # otherwise the cards will be dealt and then subsequently cleared
         self.pen.clear()
+        self.infoPen.clear()
         # reset card positions 
         self.player.cardX = self.cardX
         self.dealer.cardX = self.cardX
@@ -126,9 +145,11 @@ class Blackjack:
         
         if self.dealer.hand == [] and self.player.hand == []: # only want to clear all cards whenever the hands are empty 
             self.pen.clear()
-
-        self.render_hand(-150, self.player)
+            self.infoPen.clear()     
+        self.render_hand(-150, self.player) # if you want to change the y value of the card render, change them here
         self.render_hand(150, self.dealer)
+        
+        self.write_hand_values()
 
         print(f'Dealer hand: {self.dealer.hand_value}')
         print(f'Your hand: {self.player.hand_value}')
