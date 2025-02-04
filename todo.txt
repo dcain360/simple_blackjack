@@ -26,3 +26,8 @@ General Blackjack things that it doesn't do rn;
 spamming keys during the stand pause timer cause unexpected behavior
 
 Draw the Dealer's down card 
+
+!! Just randomly encountered some weird behavior due to aces only being valued at 11. If you get 2 aces the game bugs out
+it thinks you have an initial hand value of 22 which is not accounted for. 
+
+There needs to be a way for the game to know when to shuffle, my initial idea was to add a variable that is incremented everytime the add card fucntion is called
