@@ -43,8 +43,6 @@ class Blackjack:
         self.dealer.cardX = self.cardX
     
     def render_hand(self, y, player):
-        self.allowed_to_hit = False
-
         for i in range(len(player.hand)): 
             card = player.hand.pop(0)
             card.render(player.cardX, y, self.pen) 
@@ -75,7 +73,9 @@ class Blackjack:
 
         self.update_display()
 
-        if(self.player.hand_value > 21):
+        if self.player.hand_value == 21:
+            self.stand()
+        elif self.player.hand_value > 21:
             self.reset("You lose!, press 'd' to deal again")
             self.state = GameState.GAME_OVER
         else:    
@@ -95,7 +95,10 @@ class Blackjack:
 
         while self.dealer.hand_value < 17 and self.player.hand_value <= 21:
             self.dealer_hit() 
-        if self.dealer.hand_value > 21:
+
+        if self.dealer.hand_value == self.player.hand_value:
+            self.reset("You pushed!, press 'd' to deal again")
+        elif self.dealer.hand_value > 21:
             self.reset("Dealer busted! you win! Press 'd' to deal again")
         elif self.dealer.hand_value > self.player.hand_value:
             self.reset("You lose :( Press 'd' to deal again")
@@ -107,9 +110,9 @@ class Blackjack:
             self.pen.color("black")
             self.pen.goto(-200, 0)
             self.pen.write(message, font=("Courier New", 12, "normal"))
-            time.sleep(2)
+            #time.sleep(2)  # This line was making the game feel clunky
 
-        self.deck.shuffle()
+        self.deck.shuffle() # right now the game shuffles teh deck every hand
         self.player.reset() # sets hand value to 0
         self.dealer.reset() # same ^^
         self.player.cardX = self.cardX
@@ -137,7 +140,14 @@ class Blackjack:
         self.player.add_card(self.deck.draw())
         self.dealer.add_card(self.deck.draw())
 
+        
+
         self.update_display()
+
+        if self.player.isBlackjack:
+            self.reset("Blackjack! You win! Press 'd' to deal again")
+        if self.dealer.isBlackjack:
+            self.reset("Blackjack! Dealer Wins :( Press 'd' to deal again")
 
         self.state = GameState.PLAYER_TURN
 
