@@ -112,7 +112,7 @@ class Blackjack:
             self.pen.write(message, font=("Courier New", 12, "normal"))
             #time.sleep(2)  # This line was making the game feel clunky
 
-        self.deck.shuffle() # right now the game shuffles teh deck every hand
+        self.deck.shuffle() # right now the game shuffles the deck every hand
         self.player.reset() # sets hand value to 0
         self.dealer.reset() # same ^^
         self.player.cardX = self.cardX
@@ -127,6 +127,7 @@ class Blackjack:
     def deal(self): 
         if self.state != GameState.START and self.state != GameState.GAME_OVER:
             return
+        
         # pen clears need to be at the top of the function 
         # otherwise the cards will be dealt and then subsequently cleared
         self.pen.clear()

@@ -13,7 +13,7 @@ class Dealer:
             self.hand_value += card.get_value()
 
             if self.hand_value == 21:
-                if len(self.hand == 2) and self.hand[0].name == "A" and self.hand[1].name in ["10", "J", "Q", "K"]:
+                if (self.hand[0].name == "A" and self.hand[1].name in ["10", "J", "Q", "K"]) or (self.hand[0].name in ["10", "J", "Q", "K"] and self.hand[1].name == "A"):
                     self.isBlackjack = True
                       
         except:
