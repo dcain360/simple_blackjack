@@ -40,7 +40,7 @@ class Blackjack:
     def render_hand(self, y, player):
         self.allowed_to_hit = False
 
-        for i in range(len(player.hand)):
+        for i in range(len(player.hand)): 
             card = player.hand.pop(0)
             card.render(player.cardX, y, self.pen) 
             # below we are inserting the card to the front of the list. In the deck class, to draw a card, we use pop() which takes the card from the end of the list. 
